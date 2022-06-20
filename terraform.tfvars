@@ -21,3 +21,7 @@ subnet_private_1a_az = "us-east-1a"
 subnet_private_1b = "10.1.202.0/24"
 
 subnet_private_1b_az = "us-east-1b"
+
+sg_ports = [22,80]
+
+privatekey = "AWS2022"

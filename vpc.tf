@@ -90,12 +90,3 @@ resource "aws_route_table_association" "rt_private_1b_assoc" {
 	subnet_id = aws_subnet.private_1b.id
 	route_table_id = aws_route_table.rt_private.id
 }
-
-
-
-
-
-
-
-
-

@@ -20,3 +20,9 @@ variable "subnet_private_1a_az" {}
 variable "subnet_private_1b" {}
 
 variable "subnet_private_1b_az" {}
+
+variable "sg_ports" {
+	type = list(number)
+}
+
+variable "privatekey" {}
