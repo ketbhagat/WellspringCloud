@@ -21,7 +21,7 @@ variable "subnet_private_1b" {}
 
 variable "subnet_private_1b_az" {}
 
-variable "sg_ports" {
+variable "sg_ec2" {
 	type = list(number)
 }
 
