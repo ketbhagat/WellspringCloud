@@ -13,6 +13,7 @@ resource "aws_internet_gateway" "main" {
 	}
 }
 
+# Subnets
 resource "aws_subnet" "public" {
 	count             = "${length(var.public_subnets_cidr_blocks)}"
 	vpc_id            = "${aws_vpc.main.id}"
@@ -54,40 +55,103 @@ resource "aws_subnet" "db" {
 	}
 }
 
-resource "aws_route_table" "rt_public" {
+# RDS Subnet Group
+resource "aws_db_subnet_group" "rds_subnet_group" {
+  name       = var.rds_subnet_name
+  subnet_ids = [aws_subnet.db.*.id]
+  tags {
+    Name = "WSC-RDS"
+  }
+}
+
+# Route Table for Public Layer
+resource "aws_route_table" "public" {
 	vpc_id = aws_vpc.main.id
 	route{
 		cidr_block = "0.0.0.0/0"
 		gateway_id = aws_internet_gateway.main.id
 	}
 	tags = {
-		Name = "WSC-Public-RT"
+		Name = "WSC-Public"
 	}
 }
 
-resource "aws_route_table_association" "rt_public_1a_assoc" {
-	subnet_id = aws_subnet.public_1a.id
-	route_table_id = aws_route_table.rt_public.id
+resource "aws_route_table_association" "public" {
+  count          = "${length(var.public_subnets_cidr_blocks)}"
+  subnet_id      = "${element(aws_subnet.public.*.id, count.index)}"
+  route_table_id = "${aws_route_table.public.id}"
 }
 
-resource "aws_route_table_association" "rt_public_1b_assoc" {
-	subnet_id = aws_subnet.public_1b.id
-	route_table_id = aws_route_table.rt_public.id
+# Elastic IP for NAT gateway
+resource "aws_eip" "nat_eip" {
+  vpc = true
+  tags = {
+    Name = "WSC-Nat-Gateway-IP"
+  }
 }
 
-resource "aws_route_table" "rt_private" {
-	vpc_id = aws_vpc.main.id
-	tags = {
-		Name = "WSC-Private-RT"
-	}
+# NAT gateway to give private subnets to access to the outside world
+resource "aws_nat_gateway" "main" {
+  allocation_id = "${aws_eip.nat_eip.id}"
+  subnet_id     = "${element(aws_subnet.public.*.id, 0)}"
+
+  tags = {
+    Name = "WSC-NAT-GW"
+  }
 }
 
-resource "aws_route_table_association" "rt_private_1a_assoc" {
-	subnet_id = aws_subnet.private_1a.id
-	route_table_id = aws_route_table.rt_private.id
+# Route Tables for Web Layer
+resource "aws_route_table" "web" {
+  vpc_id = aws_vpc.main.id
+  route {
+    cidr_block = "0.0.0.0/0"
+    gateway_id = aws_internet_gateway.main.id
+  }
+  tags {
+    Name = "WSC-Web"
+  }
 }
 
-resource "aws_route_table_association" "rt_private_1b_assoc" {
-	subnet_id = aws_subnet.private_1b.id
-	route_table_id = aws_route_table.rt_private.id
+resource "aws_route_table_association" "web" {
+  count          = "${length(var.web_subnets_cidr_blocks)}"
+  subnet_id      = "${element(aws_subnet.web.*.id, count.index)}"
+  route_table_id = "${aws_route_table.web.id}"
+}
+
+# Route Tables for App Layer
+
+resource "aws_route_table" "app" {
+  vpc_id = "${aws_vpc.main.id}"
+  route {
+    cidr_block = "0.0.0.0/0"
+    gateway_id = "${aws_nat_gateway.main.id}"
+  }
+  tags {
+    Name = "WSC-App"
+  }
+}
+
+resource "aws_route_table_association" "app" {
+  count          = "${length(var.app_subnets_cidr_blocks)}"
+  subnet_id      = "${element(aws_subnet.app.*.id, count.index)}"
+  route_table_id = "${aws_route_table.app.id}"
+}
+
+# Route Tables for DB Layer
+
+resource "aws_route_table" "db" {
+  vpc_id = "${aws_vpc.main.id}"
+  route {
+    cidr_block = "0.0.0.0/0"
+    gateway_id = "${aws_nat_gateway.mian.id}"
+  }
+  tags {
+    Name = "WSC-DB"
+  }
+}
+
+resource "aws_route_table_association" "db" {
+  count          = "${length(var.db_subnets_cidr_blocks)}"
+  subnet_id      = "${element(aws_subnet.db.*.id, count.index)}"
+  route_table_id = "${aws_route_table.db.id}"
 }
