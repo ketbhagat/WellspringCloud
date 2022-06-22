@@ -5,7 +5,7 @@ resource "aws_security_group" "allow_tls" {
 	vpc_id = aws_vpc.main.id
 
 	dynamic "ingress" {
-		for_each = var.sg_ports
+		for_each = var.sg_bastion_host
 		iterator = port
 		content {
 			description = "TLS from VPC"
