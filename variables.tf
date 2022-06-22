@@ -5,21 +5,25 @@ variable "aws_profile" {}
 
 variable "vpc_cidr" {}
 
-variable "subnet_public_1a" {}
+variable "public_subnets_cidr_blocks" {
+  description = "CIDR blocks of subnets in web layer"
+  default     = ["10.0.11.0/24", "10.0.12.0/24"]
+}
 
-variable "subnet_public_1a_az" {}
+variable "web_subnets_cidr_blocks" {
+  description = "CIDR blocks of subnets in web layer"
+  default     = ["10.0.21.0/24", "10.0.22.0/24"]
+}
 
-variable "subnet_public_1b" {}
+variable "app_subnets_cidr_blocks" {
+  description = "CIDR blocks of subnets in app layer"
+  default     = ["10.0.31.0/24", "10.0.32.0/24"]
+}
 
-variable "subnet_public_1b_az" {}
-
-variable "subnet_private_1a" {}
-
-variable "subnet_private_1a_az" {}
-
-variable "subnet_private_1b" {}
-
-variable "subnet_private_1b_az" {}
+variable "db_subnets_cidr_blocks" {
+  description = "CIDR blocks of subnets in DB layer"
+  default     = ["10.0.41.0/24", "10.0.42.0/24"]
+}
 
 variable "sg_ec2" {
 	type = list(number)
