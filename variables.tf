@@ -25,7 +25,7 @@ variable "db_subnets_cidr_blocks" {
   default     = ["10.0.41.0/24", "10.0.42.0/24"]
 }
 
-variable "sg_ec2" {
+variable "sg_bastion_host" {
 	type = list(number)
 }
 
