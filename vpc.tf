@@ -13,43 +13,44 @@ resource "aws_internet_gateway" "main" {
 	}
 }
 
-resource "aws_subnet" "public_1a" {
-	vpc_id = aws_vpc.main.id
-	cidr_block = var.subnet_public_1a
-	availability_zone = var.subnet_public_1a_az
+resource "aws_subnet" "public" {
+	count             = "${length(var.public_subnets_cidr_blocks)}"
+	vpc_id            = "${aws_vpc.main.id}"
+	availability_zone = "${data.aws_availability_zones.available.names[count.index]}"
+	cidr_block        = "${var.public_subnets_cidr_blocks[count.index]}"
 	map_public_ip_on_launch = true
 	tags = {
-		Name = "WSC-Public-1a"
+		Name = "WSC-Public-${count.index}"
 	}
 }
 
-resource "aws_subnet" "public_1b" {
-	vpc_id = aws_vpc.main.id
-	cidr_block = var.subnet_public_1b
-	availability_zone = var.subnet_public_1b_az
-	map_public_ip_on_launch = true
+resource "aws_subnet" "web" {
+	count             = "${length(var.web_subnets_cidr_blocks)}"
+	vpc_id            = "${aws_vpc.main.id}"
+	availability_zone = "${data.aws_availability_zones.available.names[count.index]}"
+	cidr_block        = "${var.web_subnets_cidr_blocks[count.index]}"
 	tags = {
-		Name = "WSC-Public-1b"
+		Name = "WSC-Web-${count.index}"
 	}
 }
 
-resource "aws_subnet" "private_1a" {
-	vpc_id = aws_vpc.main.id
-	cidr_block = var.subnet_private_1a
-	availability_zone = var.subnet_private_1a_az
-	map_public_ip_on_launch = true
+resource "aws_subnet" "app" {
+	count             = "${length(var.app_subnets_cidr_blocks)}"
+	vpc_id            = "${aws_vpc.main.id}"
+	availability_zone = "${data.aws_availability_zones.available.names[count.index]}"
+	cidr_block        = "${var.app_subnets_cidr_blocks[count.index]}"
 	tags = {
-		Name = "WSC-Private-1a"
+		Name = "WSC-App-${count.index}"
 	}
 }
 
-resource "aws_subnet" "private_1b" {
-	vpc_id = aws_vpc.main.id
-	cidr_block = var.subnet_private_1b
-	availability_zone = var.subnet_private_1b_az
-	map_public_ip_on_launch = true
+resource "aws_subnet" "db" {
+	count             = "${length(var.db_subnets_cidr_blocks)}"
+	vpc_id            = "${aws_vpc.main.id}"
+	availability_zone = "${data.aws_availability_zones.available.names[count.index]}"
+	cidr_block        = "${var.db_subnets_cidr_blocks[count.index]}"
 	tags = {
-		Name = "WSC-Private-1b"
+		Name = "WSC-DB-${count.index}"
 	}
 }
 
