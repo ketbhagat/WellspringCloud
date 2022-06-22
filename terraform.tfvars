@@ -22,6 +22,6 @@ subnet_private_1b = "10.1.22.0/24"
 
 subnet_private_1b_az = "us-east-1b"
 
-sg_ec2 = [22,80]
+sg_bastion_host = [22,80]
 
 privatekey = "AWS2022"
