@@ -1,4 +1,6 @@
 #Data Source
+data "aws_availability_zones" "available" {}
+
 data "aws_ami" "awslinux2" {
 	most_recent = true
 	owners = ["amazon"]
