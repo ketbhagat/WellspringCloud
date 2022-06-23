@@ -1,9 +1,9 @@
 #EC2 Instance
-resource "aws_instance" "web" {
+resource "aws_instance" "bastion_host" {
 	ami = data.aws_ami.awslinux2.id
 	instance_type = "t2.micro"
-	subnet_id = aws_subnet.public_1a.id
-	vpc_security_group_ids = [ aws_security_group.allow_tls.id ]
+	subnet_id = aws_subnet.public.id
+	vpc_security_group_ids = [ aws_security_group.bastion_host.id ]
 	user_data = <<EOF
 		#!/bin/bash
 		yum install httpd -y
@@ -12,9 +12,6 @@ resource "aws_instance" "web" {
 		EOF
 	key_name = var.privatekey
 	tags = {
-		Name = "WSC-Web"
+		Name = "WSC-Bastion_Host"
 	}
-	depends_on = [
-		aws_security_group.allow_tls
-	]
 }
