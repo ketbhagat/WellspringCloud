@@ -27,22 +27,43 @@ variable "db_subnets_cidr_blocks" {
 
 variable "sg_bastion_host" {
 	type = list(number)
+	default = [22]
 }
 
 variable "sg_weblb" {
 	type = list(number)
+	default = [80]
+}
+
+variable "tg_port" {
+	default = [80]
+}
+
+variable "tg_protocol" {
+	default = "http"
+}
+
+variable "listener_port" {
+	default = [80]
+}
+
+variable "listener_protocol" {
+	default = "http"
 }
 
 variable "sg_webserver" {
 	type = list(number)
+	default = [22,80]
 }
 
 variable "sg_appserver" {
 	type = list(number)
+	default = [22]
 }
 
 variable "sg_db" {
 	type = list(number)
+	default = [3306]
 }
 
 variable "privatekey" {}
