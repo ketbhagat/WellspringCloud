@@ -29,4 +29,20 @@ variable "sg_bastion_host" {
 	type = list(number)
 }
 
+variable "sg_weblb" {
+	type = list(number)
+}
+
+variable "sg_webserver" {
+	type = list(number)
+}
+
+variable "sg_appserver" {
+	type = list(number)
+}
+
+variable "sg_db" {
+	type = list(number)
+}
+
 variable "privatekey" {}
