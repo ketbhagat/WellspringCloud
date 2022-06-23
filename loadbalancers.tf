@@ -1,13 +1,13 @@
 #Load Balancers
 # Application Load Balancer
 resource "aws_lb" "weblb" {
-  name               = "${var.lb_name}"
+  name               = "WSC-WebLB"
   load_balancer_type = "application"
-  security_groups    = ["${aws_security_group.webserver_sg.id}"]
+  security_groups    = ["${aws_security_group.weblb.id}"]
   subnets            = ["${aws_subnet.web.*.id}"]
 
   tags {
-    Name = "${var.lb_name}"
+    Name = "WSC-WebLB"
   }
 }
 
